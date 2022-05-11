@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Subject} from 'rxjs';
-import * as _ from 'lodash';
+import { isMatch } from 'lodash-es';
 
 @Injectable({
   providedIn: 'root'
@@ -130,7 +130,7 @@ export class BdcWalkService {
 
   private _isCompleteMatch(name: string, value: any) {
     const src = this.getTaskCompleted(name);
-    return this._isEqual(src, value) || (typeof(value) === 'object' && _.isMatch(src, value));
+    return this._isEqual(src, value) || (typeof(value) === 'object' && isMatch(src, value));
   }
 
   private _isEqual(src: any, value: any) {
