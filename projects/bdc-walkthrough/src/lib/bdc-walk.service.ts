@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import {BehaviorSubject, Subject} from 'rxjs';
 import { isMatch } from 'lodash-es';
+import { BdcWalkStorageAdapter, LocalStorageAdapter } from './storage-adapter/index';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +14,7 @@ export class BdcWalkService {
   private _version = 1;
   private _key = 'bdcWalkthrough';
   private _disabled = false;
+  private _storageAdapter: BdcWalkStorageAdapter = new LocalStorageAdapter(this._key);
 
   changes = this._notify.asObservable();
   changesDisplaying = this._notifyDisplaying.asObservable();
@@ -22,12 +24,22 @@ export class BdcWalkService {
   }
 
   constructor() {
-    this._values = JSON.parse(localStorage.getItem(this._key)) || {};
+    this.init();
+  }
+
+  init() {
+    this._values = this._storageAdapter.get();
 
     // reset all values if version is different
     if (this._values.version !== this._version) {
       this.reset();
     }
+  }
+
+  setStorageAdapter(adapter: BdcWalkStorageAdapter) {
+    this._storageAdapter = adapter;
+
+    this.init();
   }
 
   migrate(migrations: BdcWalkMigration[]) {
@@ -161,7 +173,7 @@ export class BdcWalkService {
   }
 
   private save() {
-    localStorage.setItem(this._key, JSON.stringify(this._values));
+    this._storageAdapter.set(this._values);
     this._notify.next();
   }
 }

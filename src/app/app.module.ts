@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import {BdcWalkModule} from 'bdc-walkthrough';
+import {BdcWalkModule, BdcWalkService} from 'bdc-walkthrough';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
@@ -19,6 +19,7 @@ import { Example4Component } from './example4/example4.component';
 import { Example5Component } from './example5/example5.component';
 import { Example6Component } from './example6/example6.component';
 import { Example7Component } from './example7/example7.component';
+import MemoryStorageAdapter from 'src/app/memory-storage-adapter';
 
 @NgModule({
   declarations: [
@@ -47,4 +48,10 @@ import { Example7Component } from './example7/example7.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(
+    bdcWalkService: BdcWalkService
+  ) {
+    bdcWalkService.setStorageAdapter(new MemoryStorageAdapter())
+  }
+}
